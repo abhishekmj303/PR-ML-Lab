@@ -9,7 +9,18 @@ def input_matrix(m, n):
         A.append(row)
     return np.array(A)
 
-print("Operations related to Matrix:")
+
+print("Welcome to Matrix Calculator")
+
+m1, n1 = map(int, input("\nDimensions of Matrix A (space-separated): ").split())
+print(f"Enter the elements of Matrix A ({n1}-col, {m1}-row): ")
+mat1 = input_matrix(m1, n1)
+
+m2, n2 = map(int, input("\nDimensions of Matrix B (space-separated): ").split())
+print(f"Enter the elements of Matrix B ({n2}-col, {m2}-row): ")
+mat2 = input_matrix(m2, n2)
+
+print("\nOperations related to Matrix:")
 print("  1. Matrix Addition")
 print("  2. Matrix Subtraction")
 print("  3. Scalar Matrix Multiplication")
@@ -28,35 +39,18 @@ while True:
     if opt == 12:
         print("Exiting...")
         break
-    
-    m1, n1 = map(int, input("\nEnter space-separated dimension of matrix (m x n): ").split())
-
-    if opt in (7, 9, 10, 11):
-        if m1 != n1:
-            print("Invalid dimensions: Square matrix required")
-            continue
 
     if opt in (1, 2, 4):
-        m2, n2 = m1, n1
+        if m1 != m2 or n1 != n2:
+            print("Invalid dimensions: Dimensions of both matrices must be same")
+            continue
+    # elif opt in (7, 9, 10, 11):
+    #     if m1 != n1:
+    #         print("Invalid dimensions: Square matrix required")
+    #         continue
     elif opt == 5:
-        m2, n2 = map(int, input("\nEnter space-separated dimension of another matrix (n x l): ").split())
         if n1 != m2:
             print("Invalid dimensions: Matrix Multiplication not possible")
-            continue
-
-    print("Enter the elements of matrix A: ")
-    try:
-        mat1 = input_matrix(m1, n1)
-    except ValueError as e:
-        print(e)
-        continue
-
-    if opt in (1, 2, 4, 5):
-        print("Enter the elements of matrix B: ")
-        try:
-            mat2 = input_matrix(m2, n2)
-        except ValueError as e:
-            print(e)
             continue
     
     if opt == 1:
@@ -70,7 +64,8 @@ while True:
     elif opt == 3:
         scalar = int(input("Enter the scalar value: "))
         print("Scalar Matrix Multiplication: ")
-        print(mat1 * scalar)
+        print("Matrix A:", scalar * mat1, sep="\n")
+        print("Matrix B:", scalar * mat2, sep="\n")
     
     elif opt == 4:
         print("Elementwise Matrix Multiplication: ")
@@ -82,29 +77,82 @@ while True:
     
     elif opt == 6:
         print("Matrix Transpose: ")
-        print(mat1.T)
+        print("Matrix A:", mat1.T, sep="\n")
+        print("Matrix B:", mat2.T, sep="\n")
     
     elif opt == 7:
-        print("Trace of a Matrix: ", end="")
-        print(np.trace(mat1))
+        print("Trace of a Matrix:")
+        print("Matrix A: ", end="")
+        if m1 == n1:
+            print(np.trace(mat1))
+        else:
+            print("Not a Square Matrix")
+        print("Matrix B: ", end="")
+        if m2 == n2:
+            print(np.trace(mat2))
+        else:
+            print("Not a Square Matrix")
     
     elif opt == 8:
+        print("Solve System of Linear Equations:")
+        print("\nFor Matrix A: ")
+        if m1 != n1:
+            print("Solution not possible: m != n")
+            continue
         b = np.array(list(map(int, input(f"Enter the elements of vetcor b (len={m1}): ").split())))
         if len(b) != m1:
             print("Invalid Dimensions: len(b) != m")
+        else:
+            print("Solution:", np.linalg.solve(mat1, b))
+        print("\nFor Matrix B: ")
+        if m2 != n2:
+            print("Solution not possible: m != n")
             continue
-        print("Solve System of Linear Equations: ")
-        print(np.linalg.solve(mat1, b))
+        b = np.array(list(map(int, input(f"Enter the elements of vetcor b (len={m2}): ").split())))
+        if len(b) != m2:
+            print("Invalid Dimensions: len(b) != m")
+        else:
+            print("Solution:", np.linalg.solve(mat2, b))
     
     elif opt == 9:
-        print("Determinant: ", end="")
-        print(np.linalg.det(mat1))
+        print("Determinant:")
+        print("Matrix A: ", end="")
+        if m1 == n1:
+            print(np.linalg.det(mat1))
+        else:
+            print("Not a Square Matrix")
+        print("Matrix B: ", end="")
+        if m2 == n2:
+            print(np.linalg.det(mat2))
+        else:
+            print("Not a Square Matrix")
     
     elif opt == 10:
         print("Inverse: ")
-        print(np.linalg.inv(mat1))
+        print("Matrix A: ")
+        if m1 == n1:
+            print(np.linalg.inv(mat1))
+        else:
+            print("Not a Square Matrix")
+        print("Matrix B: ")
+        if m2 == n2:
+            print(np.linalg.inv(mat2))
+        else:
+            print("Not a Square Matrix")
     
     elif opt == 11:
-        result = np.linalg.eig(mat1)
-        print("Eigen Values: ", result.eigenvalues)
-        print("Eigen Vectors: ", result.eigenvectors)
+        print("Eigen Value and Eigen Vector: ")
+        print("Matrix A: ")
+        if m1 != n1:
+            print("Not a Square Matrix")
+        else:
+            result = np.linalg.eig(mat1)
+            print("Eigen Values: ", result.eigenvalues)
+            print("Eigen Vectors: ", result.eigenvectors)
+        print("Matrix B: ")
+        if m2 != n2:
+            print("Not a Square Matrix")
+        else:
+            result = np.linalg.eig(mat2)
+            print("Eigen Values: ", result.eigenvalues)
+            print("Eigen Vectors: ", result.eigenvectors)
